@@ -163,10 +163,10 @@ function proceedWithSetup(textures) {
     characterShadow.y = character.y + 24;
     app.stage.addChild(characterShadow);
 
-    // Crear NPCs (estáticos con movimiento aleatorio, escalados)
+    // Inicializar NPCs con el flag `hasWonDiceGame`
     const npcs = [
         { x: 200, y: 200, slideIndex: 0, texture: "npc1", currentPage: 0, name: "Caballero" },
-        { x: 400, y: 200, slideIndex: 1, texture: "npc2", name: "Mago" },
+        { x: 400, y: 200, slideIndex: 1, texture: "npc2", name: "Mago", isDiceGame: true, hasWonDiceGame: false },
         { x: 600, y: 200, slideIndex: 2, texture: "npc3", currentPage: 0, name: "Aldeano" },
     ];
 
@@ -416,8 +416,8 @@ function proceedWithSetup(textures) {
         // Determinar el ganador
         if (playerRoll > npcRoll) {
             resultText += "¡Ganaste!";
-            // Activar las páginas del mago
-            if (activeNpc && activeNpc.name === "Mago") {
+            if (activeNpc && activeNpc.isDiceGame) {
+                activeNpc.hasWonDiceGame = true; // Actualizar el flag al ganar
                 activeNpc.currentPage = 0; // Reiniciar al inicio de las páginas
                 updatePageIndicator(); // Actualizar el indicador de página
                 updateButtonVisibility(); // Actualizar visibilidad de los botones
@@ -620,8 +620,16 @@ function proceedWithSetup(textures) {
             slideContainer.alpha = 1; // Asegurarse de que sea completamente visible
             slideTitle.text = `${slides[nearNpc.slideIndex].name}: ${slides[nearNpc.slideIndex].title}`; // Mostrar nombre del NPC
 
-            // Mostrar el texto del paginador
-            if (slides[nearNpc.slideIndex].pages) {
+            if (activeNpc.isDiceGame && !activeNpc.hasWonDiceGame) {
+                // Mostrar el minijuego de dados si no se ha ganado
+                slideText.text = slides[activeNpc.slideIndex].text || "¡Bienvenido al minijuego!";
+                slideLinksContainer.visible = false;
+                diceResult.visible = true;
+                rollButtonContainer.visible = true;
+                prevButton.visible = false;
+                nextButton.visible = false;
+            } else if (slides[nearNpc.slideIndex].pages) {
+                // Mostrar las páginas si el minijuego ya se ganó
                 slideText.text = slides[nearNpc.slideIndex].pages[activeNpc.currentPage];
                 const links = slides[nearNpc.slideIndex].link;
                 const linkTexts = slides[nearNpc.slideIndex].linkText;
