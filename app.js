@@ -152,7 +152,6 @@ function proceedWithSetup(textures) {
     character.x = 400;
     character.y = 300;
     character.anchor.set(0.5);
-    app.stage.addChild(character);
 
     // Sombra para el personaje principal
     const characterShadow = new PIXI.Graphics();
@@ -161,7 +160,10 @@ function proceedWithSetup(textures) {
     characterShadow.endFill();
     characterShadow.x = character.x;
     characterShadow.y = character.y + 24;
+
+    // Agregar sombra y luego el personaje al escenario
     app.stage.addChild(characterShadow);
+    app.stage.addChild(character);
 
     // Inicializar NPCs con el flag `hasWonDiceGame`
     const npcs = [
@@ -188,7 +190,6 @@ function proceedWithSetup(textures) {
         sprite.pauseDuration = 0; // Duración de la pausa
         sprite.timeSincePause = 0; // Tiempo transcurrido desde la pausa
         sprite.speed = 0.5; // Velocidad de movimiento (píxeles por frame)
-        app.stage.addChild(sprite);
 
         // Sombra para el NPC
         const shadow = new PIXI.Graphics();
@@ -197,14 +198,39 @@ function proceedWithSetup(textures) {
         shadow.endFill();
         shadow.x = sprite.x;
         shadow.y = sprite.y + 24;
-        app.stage.addChild(shadow);
-        sprite.shadow = shadow; // Asignar sombra al sprite para actualizar su posición
 
+        // Agregar sombra y luego el NPC al escenario
+        app.stage.addChild(shadow);
+        app.stage.addChild(sprite);
+
+        sprite.shadow = shadow; // Asignar sombra al sprite para actualizar su posición
         npcSprites.push(sprite);
 
         // Iniciar el movimiento aleatorio
         setNewRandomTarget(sprite);
     });
+
+    // Crear un objeto draggable (arrastrable)
+    const draggableObject = new PIXI.Sprite(textures.draggable);
+    draggableObject.width = 48; // Ajustar tamaño del sprite
+    draggableObject.height = 48;
+    draggableObject.x = 400; // Posición inicial
+    draggableObject.y = 300;
+    draggableObject.anchor.set(0.5); // Centrar el punto de anclaje
+    draggableObject.interactive = true; // Hacer el objeto interactivo
+    draggableObject.buttonMode = true;
+
+    // Crear sombra para el objeto draggable
+    const draggableShadow = new PIXI.Graphics();
+    draggableShadow.beginFill(0x000000, 0.3); // Sombra negra con opacidad
+    draggableShadow.drawEllipse(0, 0, 24, 12); // Tamaño de la sombra
+    draggableShadow.endFill();
+    draggableShadow.x = draggableObject.x;
+    draggableShadow.y = draggableObject.y + 24;
+
+    // Agregar sombra y luego el objeto draggable al escenario
+    app.stage.addChild(draggableShadow);
+    app.stage.addChild(draggableObject);
 
     // Función para establecer un nuevo objetivo aleatorio dentro de ±20 píxeles
     function setNewRandomTarget(sprite) {
@@ -494,26 +520,6 @@ function proceedWithSetup(textures) {
         app.stage.removeChild(slideContainer); // Eliminar temporalmente el contenedor
         app.stage.addChild(slideContainer); // Volver a agregarlo para que esté al frente
     }
-
-    // Crear un objeto draggable (arrastrable)
-    const draggableObject = new PIXI.Sprite(textures.draggable);
-    draggableObject.width = 48; // Ajustar tamaño del sprite
-    draggableObject.height = 48;
-    draggableObject.x = 400; // Posición inicial
-    draggableObject.y = 300;
-    draggableObject.anchor.set(0.5); // Centrar el punto de anclaje
-    draggableObject.interactive = true; // Hacer el objeto interactivo
-    draggableObject.buttonMode = true; // Cambiar el cursor al pasar sobre el objeto
-    app.stage.addChild(draggableObject);
-
-    // Crear sombra para el objeto draggable
-    const draggableShadow = new PIXI.Graphics();
-    draggableShadow.beginFill(0x000000, 0.3); // Sombra negra con opacidad
-    draggableShadow.drawEllipse(0, 0, 24, 12); // Tamaño de la sombra
-    draggableShadow.endFill();
-    draggableShadow.x = draggableObject.x;
-    draggableShadow.y = draggableObject.y + 24; // Posicionar la sombra debajo del objeto
-    app.stage.addChild(draggableShadow);
 
     // Variables para manejar el arrastre
     let isDragging = false;
