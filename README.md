@@ -40,6 +40,12 @@ Este es un proyecto sencillo desarrollado con **PixiJS**, una biblioteca de Java
    npx serve .
    ```
 
+## Ver el sitio en línea
+
+Puedes probar el proyecto directamente en tu navegador utilizando el siguiente enlace:
+
+[https://8khan.github.io/node-pixijs-101/](https://8khan.github.io/node-pixijs-101/)
+
 ## Estructura del proyecto
 
 ```
